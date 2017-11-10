@@ -1,0 +1,11 @@
+Package: itrrnr
+Type: Package
+Title: Individual Treatment Rule with Reject and Refine Options
+Version: 1.0
+Date: 2017-10-27
+Author: Haomiao Meng
+Maintainer: Haomiao Meng <haomiaomeng@126.com>
+Description: This package computes the Individualized Treatment Rule (ITR) with reject and refine options under svm and dwd loss.
+License: GPL-2
+Imports: Rcpp (>= 0.12.7), pdist
+LinkingTo: Rcpp, RcppArmadillo

@@ -1,0 +1,8 @@
+useDynLib(itrrnr)
+importFrom(Rcpp, sourceCpp)
+exportPattern("^[[:alpha:]]+")
+import(pdist)
+export(itrFit)
+export(predict.itrfit)
+export(pred_to_num)
+export(pred_chr)
