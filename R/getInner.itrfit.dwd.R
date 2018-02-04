@@ -1,6 +1,7 @@
 getInner.itrfit.dwd=function(obj, newdata=NULL) {
+ level=obj$level
+ k=length(level)
  A=obj$coef
- k=length(obj$level)
  K=obj$kernel
  if (!is.null(newdata)) {
   x=obj$x
@@ -17,5 +18,6 @@ getInner.itrfit.dwd=function(obj, newdata=NULL) {
   }
  }
  inner=cbind(1, K)%*%A%*%W.gen(k)
+ colnames(inner)=level
  return(inner)
 }

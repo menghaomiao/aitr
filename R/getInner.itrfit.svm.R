@@ -1,7 +1,8 @@
 getInner.itrfit.svm=function(obj, newdata=NULL) {
  a=obj$a
  n=length(a)
- k=max(a)
+ level=obj$level
+ k=length(level)
  W_aW=matrix(-1/(k-1), n, k)
  W_aW[cbind(1:n, a)]=1
  theta_s_gamma=as.matrix(obj$theta_s_gamma)
@@ -21,5 +22,6 @@ getInner.itrfit.svm=function(obj, newdata=NULL) {
   }
  }
  inner=get_inner(theta_s_gamma, K+1, W_aW)
+ colnames(inner)=level
  return(inner)
 }

@@ -5,6 +5,5 @@ predict.itrfit=function(obj, newdata=NULL, option='refine', delta=0.01) {
  } else {
   rule=pred(inner)
  }
- colnames(rule)=obj$level
  return(rule)
 }

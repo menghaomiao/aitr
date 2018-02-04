@@ -1,6 +1,7 @@
 pred_refine=function(inner, delta=0.01) {
- rule=matrix(0, nrow(inner), ncol(inner))
+ res=matrix(0, nrow(inner), ncol(inner))
  inner[inner>=-delta & inner<=delta]=0
- rule[inner>=0]=1
- return(rule)
+ res[inner>=0]=1
+ colnames(res)=colnames(inner)
+ return(res)
 }
