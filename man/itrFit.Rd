@@ -40,8 +40,8 @@ In addition, for \code{'itrfit.svm'} object it will return fitted value \code{th
 }
 \examples{
 data(sim1)
-train = sim1[1:1000, ]
-test = sim1[3001:5000, ]
-res = itrFit(train[, 1:2], train[, 3], train[, 4], cv = T) #using bent svm loss
-res = itrFit(train[, 1:2], train[, 3], train[, 4], method = 'dwd', lambda = 10^(0:2)) #using bent dwd loss
+data = sim1[1:1000, ]
+
+res = itrFit(data[, 1:2], data[, 3], data[, 4], cv = T) #using bent svm loss
+res = itrFit(data[, 1:2], data[, 3], data[, 4], method = 'dwd', lambda = 10^(0:2)) #using bent dwd loss
 }
