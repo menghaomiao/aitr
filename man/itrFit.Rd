@@ -47,5 +47,5 @@ data(sim1)
 data = sim1[1:1000, ]
 
 res = itrFit(data[, 1:2], data[, 3], data[, 4], cv = TRUE) #using bent svm loss
-res = itrFit(data[, 1:2], data[, 3], data[, 4], method = "dwd", lambda = 10^(-1:1)) #using bent dwd loss
+res = itrFit(data[, 1:2], data[, 3], data[, 4], method = "dwd", lambda = 10^(-1:2)) #using bent dwd loss
 }

@@ -5,7 +5,7 @@
 Predict the options based on itrfit object.
 }
 \usage{
-## S3 method for class 'itrfit'
+## S3 method for class \code{"itrfit"}
 predict(obj, newdata = NULL, option = "refine", delta = NULL, fence = NULL)
 }
 \arguments{
@@ -14,6 +14,7 @@ predict(obj, newdata = NULL, option = "refine", delta = NULL, fence = NULL)
 \item{option}{the option used for prediction. \code{option = "normal"} will produce ITR while \code{option = "refine"} will produce ITR with reject and refine option.}
 \item{delta}{a numeric value greater than -1 used for predicting ITRRNR, can be omitted if \code{option = "normal"} or \code{tunning = TRUE} when \code{itrFit} is called.}
 \item{fence}{a numeric value greater than 0 used for predicting ITRRNR, can be omitted if \code{option = "normal"} or \code{tunning = TRUE} when \code{itrFit} is called.}
+}
 \value{
 \code{predict.itrfit} preduces a 0-1 matrix, where the column names are the treatment levels and ith row indicates which treatments are suggested to ith patient. Specifically, 1 stands for "suggested" and 0 stands for "not suggested".
 }
