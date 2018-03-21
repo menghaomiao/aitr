@@ -5,7 +5,7 @@
 Predict the options based on itrfit object.
 }
 \usage{
-## S3 method for class \code{"itrfit"}
+## S3 method for class "itrfit"
 predict(obj, newdata = NULL, option = "refine", delta = NULL, fence = NULL)
 }
 \arguments{
