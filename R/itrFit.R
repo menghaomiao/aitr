@@ -1,4 +1,4 @@
-itrFit=function(x, a, y, p=1/k, method='svm', s=1.1, kernel='linear', epsilon=1/2/median(d)^2, d=2, cv=F, lambda=5^(-5:5)) {
+itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/2/median(d)^2, d=2, lambda=5^(-5:5), cv=F, tunning=T) {
  n=length(a)
  a=as.factor(a)
  level.name=levels(a)
@@ -41,7 +41,8 @@ itrFit=function(x, a, y, p=1/k, method='svm', s=1.1, kernel='linear', epsilon=1/
   dim(inner)=c(n, k, m)
  } else if (method=='dwd') {
   WWK=ind*(K+1)
-  W=t(W.gen(k)[, a])
+  Wbasis=W.gen(k)
+  W=t(Wbasis[, a])
   inner=array(0, c(n, k, m))
   if (cv) {
    folds=sample.int(n)%%5+1
@@ -49,13 +50,13 @@ itrFit=function(x, a, y, p=1/k, method='svm', s=1.1, kernel='linear', epsilon=1/
     id=folds==i
     A=dwdfit_C(WWK[!id, !id], K[!id, !id], W[!id, ], w[!id], sminus, lambda)
     for (j in 1:m) {
-     inner[id, , j]=cbind(1, K[id, !id])%*%A[, , j]%*%W.gen(k)
+     inner[id, , j]=cbind(1, K[id, !id])%*%A[, , j]%*%Wbasis
     }
    }
   } else {
    A=dwdfit_C(WWK, K, W, w, sminus, lambda)
    for (j in 1:m) {
-    inner[, , j]=cbind(1, K)%*%A[,  ,j]%*%W.gen(k)
+    inner[, , j]=cbind(1, K)%*%A[,  ,j]%*%Wbasis
    }
   }
  } else stop('current version only supports svm and dwd loss.')
@@ -67,16 +68,21 @@ itrFit=function(x, a, y, p=1/k, method='svm', s=1.1, kernel='linear', epsilon=1/
  opt=which.min(error)
  if (opt==1 | opt==m) warning('The lambda may not be optimal. Another range may be considered.')
  optlambda=lambda[opt]
+ inner=inner[, , opt]
  res=list(optlambda=optlambda, s=s, level=level.name, x=x, a=a, y=y)
  if (method=='svm') {
-  if (cv) theta_s_gamma=as.numeric(svmfit_C(WWK, diagK, w, sminus, optlambda))
-  else theta_s_gamma=theta_s_gamma[, opt]
-  res$theta_s_gamma=theta_s_gamma
+  if (cv) {
+   theta_s_gamma=svmfit_C(WWK, diagK, w, sminus, optlambda)
+   inner=get_inner(theta_s_gamma, K, W_aW)
+  } else theta_s_gamma=theta_s_gamma[, opt]
+  res$theta_s_gamma=as.numeric(theta_s_gamma)
   res$kernel=K-1
   class(res)=c('itrfit.svm', 'itrfit')
  } else {
-  if (cv) A=dwdfit_C(WWK, K, W, w, sminus, lambda[1:opt])
-  else A=A[, , opt]
+  if (cv) {
+   A=dwdfit_C(WWK, K, W, w, sminus, lambda[1:opt])
+   inner=cbind(1, K)%*%A%*%Wbasis
+  } else A=A[, , opt]
   res$coef=A
   res$kernel=K
   class(res)=c('itrfit.dwd', 'itrfit')
@@ -84,5 +90,11 @@ itrFit=function(x, a, y, p=1/k, method='svm', s=1.1, kernel='linear', epsilon=1/
  attr(res$kernel, 'type')=kernel
  if (kernel=='gaussian') attr(res$kernel, 'epsilon')=epsilon
  if (kernel=='polynomial') attr(res$kernel, 'degree')=d
+ if (tunning) {
+  tunning=tune(inner, w, a, s)
+  res$refine_par=tunning$refine_par
+  res$predict=tunning$rule
+  res$obj_value=tunning$obj_value
+ }
  return(res)
 }

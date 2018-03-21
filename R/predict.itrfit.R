@@ -1,7 +1,15 @@
-predict.itrfit=function(obj, newdata=NULL, option='refine', delta=0.01) {
+predict.itrfit=function(obj, newdata=NULL, option='refine', delta=NULL, fence=NULL) {
  inner=getInner(obj, newdata)
  if (option=='refine') {
-  rule=pred_refine(inner, delta)
+  if (is.null(delta)) {
+   if (is.null(obj$refine_par)) stop('tunning parameter "delta" is missing!')
+   else delta=obj$refine_par[1]
+  }
+  if (is.null(fence)) {
+   if (is.null(obj$refine_par)) stop('tunning parameter "fence" is missing!')
+   else fence=obj$refine_par[2]
+  }
+  rule=pred_refine(inner, delta, fence)
  } else {
   rule=pred(inner)
  }
