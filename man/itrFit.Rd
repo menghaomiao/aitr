@@ -26,6 +26,8 @@ This function could fit the Individualized Treatment Rule under bent svm or bent
 }
 \value{
 \code{itrFit} returns an object of class \code{c("itrfit.svm", "itrfit")} or \code{c("itrfit.dwd", "itrfit")}. An object of class \code{"itrfit"} is a list containing at least the following components:
+
+\item{obj_value}{the expected outcome under the original ITR. if \code{tunning=TRUE}, the weighted expected outcome under ITRRNR objective function is also returned.}
 \item{optlambda}{the optimal lambda.}
 \item{s}{the bent slope.}
 \item{level}{the treatment levels.}
@@ -35,7 +37,6 @@ This function could fit the Individualized Treatment Rule under bent svm or bent
 \item{kernel}{the kernel matrix computed.}
 \item{refine_par}{if \code{tunning=TRUE}, a tunning parameter used in predicting ITRRNR.}
 \item{predict}{if \code{tunning=TRUE}, the fitted rule with reject and refine options.}
-\item{obj_value}{if \code{tunning=TRUE}, the value of objective function under the fitted rule.}
 
 In addition, for \code{"itrfit.svm"} object it will return fitted value \code{theta_s_gamma}, and for \code{"itrfit.dwd"} it will return the fitted coefficient \code{coef}.
 }

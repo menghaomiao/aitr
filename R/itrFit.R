@@ -9,6 +9,8 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
  ind=as.matrix(dist(a, 'manhattan')) #ind=ind_{ai=al}-1/(k-1)*ind_{ai\neq al}
  ind[which(ind!=0)]=-1/(k-1)
  ind[which(ind==0)]=1
+ if (any(p<0 | p>1)) stop('p must be between 0 to 1!')
+ if (length(s)>1 | s<1) stop('s must be a number greater than 1!')
  w=y/p
  sminus=s-1
  x=as.matrix(x)
@@ -60,16 +62,16 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
    }
   }
  } else stop('current version only supports svm and dwd loss.')
- error=numeric(m)
+ obj=numeric(m)
  for (i in 1:m) {
   rule=sapply(1:n, function(j) which.max(inner[j, , i]))
-  error[i]=sum(w[a==rule])/sum((a==rule)/p)
+  obj[i]=sum(w[a==rule])/sum((a==rule)/p)
  }
- opt=which.min(error)
+ opt=which.min(obj)
  if (opt==1 | opt==m) warning('The lambda may not be optimal. Another range may be considered.')
  optlambda=lambda[opt]
- inner=inner[, , opt]
- res=list(optlambda=optlambda, s=s, level=level.name, x=x, a=a, y=y)
+ optinner=inner[, , opt]
+ res=list(obj_value=c(itr=obj[opt]), optlambda=optlambda, s=s, level=level.name, x=x, a=a, y=y)
  if (method=='svm') {
   if (cv) {
    theta_s_gamma=svmfit_C(WWK, diagK, w, sminus, optlambda)
@@ -90,11 +92,13 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
  attr(res$kernel, 'type')=kernel
  if (kernel=='gaussian') attr(res$kernel, 'epsilon')=epsilon
  if (kernel=='polynomial') attr(res$kernel, 'degree')=d
- if (tunning) {
-  tunning=tune(inner, w, a, s)
+ if (s>1 & tunning) {
+  tunning=tune(optinner, w, a, s)
+  obj=tunning$obj_value
+  if (cv) tunning=tune(inner, w, a, s)
   res$refine_par=tunning$refine_par
   res$predict=tunning$rule
-  res$obj_value=tunning$obj_value
+  res$obj_value=c(res$obj_value, itrrnr=obj)
  }
  return(res)
 }

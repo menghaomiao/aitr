@@ -9,7 +9,7 @@ Predict the options based on itrfit object.
 predict(obj, newdata = NULL, option = "refine", delta = NULL, fence = NULL)
 }
 \arguments{
-\item{obj}{object of class inheriting from \code{"itrrnr"}.}
+\item{obj}{object of class inheriting from \code{"itrfit"}.}
 \item{newdata}{an optional data frame or data matrix in which to look for variables with which to predict. If omitted, the fitted options are used.}
 \item{option}{the option used for prediction. \code{option = "normal"} will produce ITR while \code{option = "refine"} will produce ITR with reject and refine option.}
 \item{delta}{a numeric value greater than -1 used for predicting ITRRNR, can be omitted if \code{option = "normal"} or \code{tunning = TRUE} when \code{itrFit} is called.}
