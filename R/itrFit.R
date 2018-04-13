@@ -98,6 +98,7 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
   if (cv) tunning=tune(inner, w, a, s)
   res$refine_par=tunning$refine_par
   res$predict=tunning$rule
+  colnames(res$predict)=level.name
   res$obj_value=c(res$obj_value, itrrnr=obj)
  }
  return(res)
