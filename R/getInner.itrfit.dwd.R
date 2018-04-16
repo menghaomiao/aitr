@@ -1,11 +1,15 @@
 getInner.itrfit.dwd=function(obj, newdata=NULL) {
  level=obj$level
  k=length(level)
+ var=colnames(obj$x)
+ id=rownames(obj$x)
  A=obj$coef
  K=obj$kernel
  if (!is.null(newdata)) {
   x=obj$x
   newx=as.matrix(newdata)
+  if (any(colnames(newx)!=var)) stop('testing set must have the same structure as the training set!')
+  id=rownames(newdata)
   kernel=attr(K, 'type')
   if (kernel=='linear') {
    K=newx%*%t(x)
@@ -19,5 +23,6 @@ getInner.itrfit.dwd=function(obj, newdata=NULL) {
  }
  inner=cbind(1, K)%*%A%*%W.gen(k)
  colnames(inner)=level
+ rownames(inner)=id
  return(inner)
 }

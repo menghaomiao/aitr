@@ -2,7 +2,7 @@
 \alias{predict.itrfit}
 \title{Predict method for Individualized Treatment Rule (ITR)}
 \description{
-Predict the options based on itrfit object.
+Predict the options based on \code{"itrfit"} object.
 }
 \usage{
 ## S3 method for class "itrfit"
@@ -10,13 +10,13 @@ predict(obj, newdata = NULL, option = "refine", delta = NULL, fence = NULL)
 }
 \arguments{
 \item{obj}{object of class inheriting from \code{"itrfit"}.}
-\item{newdata}{an optional data frame or data matrix in which to look for variables with which to predict. If omitted, the fitted options are used.}
+\item{newdata}{an optional data frame or a data matrix in which to look for variables with which to predict. If omitted, the fitted options are used.}
 \item{option}{the option used for prediction. \code{option = "normal"} will produce ITR while \code{option = "refine"} will produce ITR with reject and refine option.}
 \item{delta}{a numeric value greater than -1 used for predicting ITRRNR, can be omitted if \code{option = "normal"} or \code{tunning = TRUE} when \code{itrFit} is called.}
 \item{fence}{a numeric value greater than 0 used for predicting ITRRNR, can be omitted if \code{option = "normal"} or \code{tunning = TRUE} when \code{itrFit} is called.}
 }
 \value{
-\code{predict.itrfit} preduces a 0-1 matrix, where the column names are the treatment levels and ith row indicates which treatments are suggested to ith patient. Specifically, 1 stands for "suggested" and 0 stands for "not suggested".
+\code{predict.itrfit} preduces a 0-1 matrix of class \code{"ITR"}, where the column names are the treatment levels and ith row indicates which treatments are suggested to ith patient. Specifically, 1 stands for "suggested" and 0 stands for "not suggested".
 }
 \author{
 \packageAuthor{itrrnr}

@@ -3,6 +3,8 @@ getInner.itrfit.svm=function(obj, newdata=NULL) {
  n=length(a)
  level=obj$level
  k=length(level)
+ var=colnames(obj$x)
+ id=rownames(obj$x)
  W_aW=matrix(-1/(k-1), n, k)
  W_aW[cbind(1:n, a)]=1
  theta_s_gamma=as.matrix(obj$theta_s_gamma)
@@ -10,6 +12,8 @@ getInner.itrfit.svm=function(obj, newdata=NULL) {
  if (!is.null(newdata)) {
   x=obj$x
   newx=as.matrix(newdata)
+  if (any(colnames(newx)!=var)) stop('testing set must have the same structure as the training set!')
+  id=rownames(newdata)
   kernel=attr(K, 'type')
   if (kernel=='linear') {
    K=newx%*%t(x)
@@ -21,7 +25,8 @@ getInner.itrfit.svm=function(obj, newdata=NULL) {
    K=(1+newx%*%t(x))^d
   }
  }
- inner=get_inner(theta_s_gamma, K+1, W_aW)
+ inner=get_inner(theta_s_gamma, K, W_aW)
  colnames(inner)=level
+ rownames(inner)=id
  return(inner)
 }

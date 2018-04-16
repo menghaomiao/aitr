@@ -23,10 +23,9 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
   ker=(1+x%*%t(x))^d
  } else stop('kernel must be one of the followings: linear, gaussian, polynomial.')
  K=ker+diag(n)*0.01*mean(diag(ker))
+ WWK=ind*(K+1)
  if (method=='svm') {
-  K=K+1
-  WWK=ind*K
-  diagK=diag(K)
+  diagK=diag(K)+1
   W_aW=matrix(-1/(k-1), n, k) #W_aW=<W_ai, W_j>
   W_aW[cbind(1:n, a)]=1
   if (cv) {
@@ -43,7 +42,6 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
   }
   dim(inner)=c(n, k, m)
  } else if (method=='dwd') {
-  WWK=ind*(K+1)
   Wbasis=W.gen(k)
   W=t(Wbasis[, a])
   inner=array(0, c(n, k, m))
@@ -77,14 +75,20 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
   if (cv) {
    theta_s_gamma=svmfit_C(WWK, diagK, w, sminus, optlambda)
    inner=get_inner(theta_s_gamma, ker, W_aW)
-  } else theta_s_gamma=theta_s_gamma[, opt]
+  } else {
+   theta_s_gamma=theta_s_gamma[, opt]
+   inner=optinner
+  }
   res$theta_s_gamma=as.numeric(theta_s_gamma)
   class(res)=c('itrfit.svm', 'itrfit')
  } else {
   if (cv) {
    A=dwdfit_C(WWK, K, W, w, sminus, lambda[1:opt])
    inner=cbind(1, ker)%*%A%*%Wbasis
-  } else A=A[, , opt]
+  } else {
+   A=A[, , opt]
+   inner=optinner
+  }
   res$coef=A
   class(res)=c('itrfit.dwd', 'itrfit')
  }
@@ -92,13 +96,20 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
  if (kernel=='gaussian') attr(res$kernel, 'epsilon')=epsilon
  if (kernel=='polynomial') attr(res$kernel, 'degree')=d
  if (s>1 & tunning) {
-  tunning=tune(optinner, w, a, s)
+  tunning=tune(optinner, a, y, p, s)
   obj=tunning$obj_value
-  if (cv) tunning=tune(inner, w, a, s)
-  res$refine_par=tunning$refine_par
+  res$obj_value=c(res$obj_value, itrrnr=obj)
+  if (cv) tunning=tune(inner, a, y, p, s)
   res$predict=tunning$rule
   colnames(res$predict)=level.name
-  res$obj_value=c(res$obj_value, itrrnr=obj)
+  rownames(res$predict)=rownames(x)
+  attr(res$predict, 'outcome_ratio')=s
+  class(res$predict)=c('ITR', 'matrix')
+  res$refine_par=tunning$refine_par
+ } else {
+  colnames(inner)=level.name
+  rownames(inner)=rownames(x)
+  res$predict=pred(inner)
  }
  return(res)
 }

@@ -4,5 +4,6 @@ pred_refine=function(inner, delta, fence) {
  res=refine(inner, delta)
  res[rej, ]=1
  colnames(res)=colnames(inner)
+ rownames(res)=rownames(inner)
  return(res)
 }

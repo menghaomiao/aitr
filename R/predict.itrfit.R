@@ -10,6 +10,8 @@ predict.itrfit=function(obj, newdata=NULL, option='refine', delta=NULL, fence=NU
    else fence=obj$refine_par[2]
   }
   rule=pred_refine(inner, delta, fence)
+  attr(rule, 'outcome_ratio')=obj$s
+  class(rule)=c('ITR', 'matrix')
  } else {
   rule=pred(inner)
  }

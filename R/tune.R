@@ -1,4 +1,9 @@
-tune=function(inner, w, a, s) {
+tune=function(inner, a, y, p, s) {
+ evalfit=function(rule) {
+  rulesize=rowSums(rule)
+  inrule=rowSums(rule*rulea)==1
+  sum((y/p/(1+(rulesize-1)*s))[inrule])/sum(inrule/p/rulesize)
+ }
  n=nrow(inner)
  k=ncol(inner)
  rulea=matrix(0, n, k)
@@ -8,7 +13,7 @@ tune=function(inner, w, a, s) {
  obj=numeric(100)
  for (i in 1:100) {
   rule=refine(stdinner, delta[i])
-  obj[i]=evalFit(rule, rulea, w, s)
+  obj[i]=evalfit(rule)
  }
  delta=delta[which.min(obj)]
  rule=refine(stdinner, delta)
@@ -18,7 +23,7 @@ tune=function(inner, w, a, s) {
   rej=reject(inner, fence[i])
   temprule=rule
   temprule[rej, ]=1
-  obj[i]=evalFit(temprule, rulea, w, s)
+  obj[i]=evalfit(temprule)
  }
  fence=fence[which.min(obj)]
  rule[reject(inner, fence), ]=1

@@ -9,8 +9,8 @@ itrFit(x, a, y, p = 1/k, s = 1.2, method = "svm", kernel = "linear", epsilon = 1
 }
 \arguments{
 \item{x}{a data frame or a matrix.}
-\item{a}{a factor or a numeric vector indicating the treatment assigned to patients.}
-\item{y}{a numeric vector indicating the outcome after taking a treatment.}
+\item{a}{a factor or an integer vector indicating the treatment assigned to patients.}
+\item{y}{a numeric vector indicating the outcome after taking the treatment.}
 \item{p}{a numeric vector with each element between 0 to 1, indicating the probability of the treatment been assigned to the patient.}
 \item{s}{a numeric value greater than 1, indicating the bent slope of the loss.}
 \item{method}{the method to be used. Currently only \code{method = "svm"} and \code{method = "dwd"} are supported.}
@@ -35,8 +35,8 @@ This function could fit the Individualized Treatment Rule under bent svm or bent
 \item{a}{the input treatment \code{a} used for fitting.}
 \item{y}{the input outcome \code{y} used for fitting.}
 \item{kernel}{the kernel matrix computed.}
+\item{predict}{an object of class \code{"ITR"}. If \code{tunning=TRUE}, then the fitted rule with reject and refine options is returned, otherwise the original ITR will be returned.}
 \item{refine_par}{if \code{tunning=TRUE}, a tunning parameter used in predicting ITRRNR.}
-\item{predict}{if \code{tunning=TRUE}, the fitted rule with reject and refine options.}
 
 In addition, for \code{"itrfit.svm"} object it will return fitted value \code{theta_s_gamma}, and for \code{"itrfit.dwd"} it will return the fitted coefficient \code{coef}.
 }

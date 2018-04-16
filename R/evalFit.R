@@ -1,3 +1,1 @@
-evalFit=function(rule, testrule, testw, s) {
- mean(testw*(rowSums(rule*testrule)==1)/(1+(rowSums(rule)-1)*s))
-}
+evalFit=function(rule, a, y, p=1/length(level)) UseMethod('evalFit')
