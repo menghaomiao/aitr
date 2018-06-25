@@ -1,12 +1,12 @@
-\name{evalFit.ITR}
-\alias{evalFit}
+\name{evalITR}
+\alias{evalITR}
 \title{Evaluate Fitting for Individualized Treatment Rule (ITR)}
 \description{
 Evaluate the goodness of fit for predicted ITR with or without reject and refine options.
 }
 \usage{
 ## S3 method for class "ITR"
-evalFit(rule, a, y, p = 1/length(level))
+evalITR(rule, a, y, p = 1/d[2])
 }
 \arguments{
 \item{rule}{object of class inheriting from \code{"ITR"}.}
@@ -27,8 +27,8 @@ test = sim1[3001:5000, ]
 res = itrFit(train[, 1:2], train[, 3], train[, 4], kernel = "polynomial", d = 4, lambda = 5^(4:11))
 
 rule = predict(res, test[, 1:2], option = "normal")
-evalFit(rule, test[, 3], test[, 4]) #evaluate prediction for ITR
+evalITR(rule, test[, 3], test[, 4]) #evaluate prediction for ITR
 
 rule = predict(res, test[, 1:2])
-evalFit(rule, test[, 3], test[, 4]) #evaluate prediction for ITR with Reject and Rifine options
+evalITR(rule, test[, 3], test[, 4]) #evaluate prediction for ITR with Reject and Rifine options
 }

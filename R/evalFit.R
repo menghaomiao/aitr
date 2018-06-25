@@ -1,1 +1,0 @@
-evalFit=function(rule, a, y, p=1/length(level)) UseMethod('evalFit')

@@ -1,6 +1,7 @@
-predict.itrfit=function(obj, newdata=NULL, option='refine', delta=NULL, fence=NULL) {
+predict.itrfit=function(obj, newdata=NULL, option='refine', delta=NULL, fence=NULL, ...) {
  inner=getInner(obj, newdata)
- if (option=='refine') {
+ s=obj$s
+ if (option=='refine' & s>1) {
   if (is.null(delta)) {
    if (is.null(obj$refine_par)) stop('tunning parameter "delta" is missing!')
    else delta=obj$refine_par[1]
@@ -10,7 +11,7 @@ predict.itrfit=function(obj, newdata=NULL, option='refine', delta=NULL, fence=NU
    else fence=obj$refine_par[2]
   }
   rule=pred_refine(inner, delta, fence)
-  attr(rule, 'outcome_ratio')=obj$s
+  attr(rule, 'outcome.ratio')=s
   class(rule)=c('ITR', 'matrix')
  } else {
   rule=pred(inner)

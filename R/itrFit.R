@@ -83,7 +83,7 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
   class(res)=c('itrfit.svm', 'itrfit')
  } else {
   if (cv) {
-   A=dwdfit_C(WWK, K, W, w, sminus, lambda[1:opt])
+   A=dwdfit_C(WWK, K, W, w, sminus, lambda[1:opt])[, , opt]
    inner=cbind(1, ker)%*%A%*%Wbasis
   } else {
    A=A[, , opt]
@@ -103,7 +103,7 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
   res$predict=tunning$rule
   colnames(res$predict)=level.name
   rownames(res$predict)=rownames(x)
-  attr(res$predict, 'outcome_ratio')=s
+  attr(res$predict, 'outcome.ratio')=s
   class(res$predict)=c('ITR', 'matrix')
   res$refine_par=tunning$refine_par
  } else {

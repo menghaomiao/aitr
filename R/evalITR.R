@@ -1,6 +1,7 @@
-evalFit.ITR=function(rule, a, y, p=1/length(level)) {
+evalITR=function(rule, a, y, p=1/d[2]) {
+ if (!is(rule, 'ITR')) stop('rule must be of class "ITR"!')
  d=dim(rule)
- s=attr(rule, 'outcome_ratio')
+ s=attr(rule, 'outcome.ratio')
  if (!is.matrix(a)) {
   a=as.character(a)
   level=colnames(rule)

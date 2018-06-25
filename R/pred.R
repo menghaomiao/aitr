@@ -6,6 +6,6 @@ pred=function(inner) {
  colnames(res)=colnames(inner)
  rownames(res)=rownames(inner)
  class(res)=c('ITR', 'matrix')
- attr(res, 'outcome_ratio')=1
+ attr(res, 'outcome.ratio')=1
  return(res)
 }

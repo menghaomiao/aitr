@@ -22,7 +22,7 @@ itrFit(x, a, y, p = 1/k, s = 1.2, method = "svm", kernel = "linear", epsilon = 1
 \item{tunning}{logical.If \code{TRUE} then a tunning procedure for \code{delta} and \code{fence} (used for predicting ITRRNR) is performed.}
 }
 \details{
-This function could fit the Individualized Treatment Rule under bent svm or bent dwd loss. The bent slope is controled by parameter s. When \code{s = 1}, it will degenerate to the usual ITR fit. The current version allows \code{s = 1} for bent svm loss, but not for bent dwd loss. For the purpose of saving computation time, it suggested to set \code{cv = TRUE} for bent svm loss and \code{cv = FALSE} for bent dwd loss. It also suggested to set \code{tunning = TRUE} unless the reject and refine options are not needed.
+This function could fit the Individualized Treatment Rule under bent svm or bent dwd loss. The bent slope is controled by parameter s. When \code{s = 1}, it will degenerate to the usual ITR fit. For the purpose of saving computation time, it suggested to set \code{cv = TRUE} for bent svm loss and \code{cv = FALSE} for bent dwd loss. It also suggested to set \code{tunning = TRUE} unless the reject and refine options are not needed.
 }
 \value{
 \code{itrFit} returns an object of class \code{c("itrfit.svm", "itrfit")} or \code{c("itrfit.dwd", "itrfit")}. An object of class \code{"itrfit"} is a list containing at least the following components:
