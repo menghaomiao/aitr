@@ -118,67 +118,87 @@ double update_rho(double rho, double r1, double r2) {
 cube dwdfit_C(mat WWK, mat K, mat W, vec w, double sminus, vec lambda, double maxiter=100) {
 
  int n=K.n_rows, p=n+1, kminus=W.n_cols, m=lambda.size();
- mat A(p, kminus), B(p, kminus), Z(p, kminus), oldB(p, kminus), ZB(p, kminus), temp(p, kminus);
- mat wW(n, kminus), wWW(n, kminus), P(p, p);
- vec u(n), b(n), ub(n), gamma(n);
- double nlambda, nlrho, r1, r2, rho=1, epsilon=p*kminus*0.0000001;
+ mat A(p, kminus), ZB(p, kminus), wW(n, kminus), wWW(n, kminus), P(p, p);
+ vec u(n);
+ double nlambda;
  cube coef(p, kminus, m);
+
  for (int j=0; j<kminus; j++) {
   wW.col(j)=w%W.col(j);
   wWW.col(j)=wW.col(j)%W.col(j);
  }
- P.fill(0), A.fill(0), Z.fill(0), oldB.fill(0), ZB.fill(0), u.fill(1);
+ P.fill(0), A.fill(0), ZB.fill(0), u.fill(1);
  P(0, 0)=1;
  P.submat(1, 1, p-1, p-1)=K;
  K=join_rows(u, K);
 
- for (int i=0; i<m; i++) {
+ if (sminus>0) { /* dwd fit for bent loss */
 
-  nlambda=n*lambda[i];
+  mat B(p, kminus), Z(p, kminus), oldB(p, kminus), temp(p, kminus);
+  vec b(n), ub(n), gamma(n);
+  double nlrho, r1, r2, rho=1, epsilon=p*kminus*0.0000001;
+  Z.fill(0), oldB.fill(0);
 
-  /* ADMM algorithm start */
-  for (int iter=0; iter<maxiter; iter++) {
+  /* iterate for lambda */
+  for (int i=0; i<m; i++) {
+ 
+   nlambda=n*lambda[i];
 
-   nlrho=nlambda+rho;
+   /* ADMM algorithm start */
+   for (int iter=0; iter<maxiter; iter++) {
 
-   /* update alpha */
-   A=update_alpha(A, K, P, W, ZB, wW, wWW, nlrho);
-   u=sum(W%(K*A), 1);
-   b=sum(W%(K*Z), 1);
-   ub=(rho*u+b)/sminus;
+    nlrho=nlambda+rho;
 
-   /* update beta */
-   gamma=update_gamma(gamma, K, WWK, ub, w);
-   temp.fill(0);
-   for (int j=0; j<kminus; j++) {
-    temp.submat(1, j, n, j)=gamma%W.col(j);
+    /* update alpha */
+    A=update_alpha(A, K, P, W, ZB, wW, wWW, nlrho);
+    u=sum(W%(K*A), 1);
+    b=sum(W%(K*Z), 1);
+    ub=(rho*u+b)/sminus;
+
+    /* update beta */
+    gamma=update_gamma(gamma, K, WWK, ub, w);
+    temp.fill(0);
+    for (int j=0; j<kminus; j++) {
+     temp.submat(1, j, n, j)=gamma%W.col(j);
+    }
+    temp.row(0)=sum(temp);
+    B=A-(sminus*temp-Z)/rho;
+
+    /* check convergence */
+    r1=0, r2=0;
+    temp=A-B;
+    for (int j=0; j<kminus; j++) {
+     r1+=as_scalar(temp.col(j).t()*P*temp.col(j));
+    }
+    temp=B-oldB;
+    for (int j=0; j<kminus; j++) {
+     r2+=as_scalar(temp.col(j).t()*P*temp.col(j));
+    }
+    r2=rho*rho*r2;
+    if ((r1<epsilon) & (r2<epsilon)) break;
+    oldB=B;
+
+    /* update z */
+    ZB=Z-rho*B;
+    Z=ZB+rho*A;
+
+    /* update rho */
+    rho=update_rho(rho, r1, r2);
    }
-   temp.row(0)=sum(temp);
-   B=A-(sminus*temp-Z)/rho;
 
-   /* check convergence */
-   r1=0, r2=0;
-   temp=A-B;
-   for (int j=0; j<kminus; j++) {
-    r1+=as_scalar(temp.col(j).t()*P*temp.col(j));
-   }
-   temp=B-oldB;
-   for (int j=0; j<kminus; j++) {
-    r2+=as_scalar(temp.col(j).t()*P*temp.col(j));
-   }
-   r2=rho*rho*r2;
-   if ((r1<epsilon) & (r2<epsilon)) break;
-   oldB=B;
-
-   /* update z */
-   ZB=Z-rho*B;
-   Z=ZB+rho*A;
-
-   /* update rho */
-   rho=update_rho(rho, r1, r2);
+   coef.slice(i)=A;
   }
 
-  coef.slice(i)=A;
+ } else { /* dwd fit for common loss */
+
+  /* iterate for lambda */
+  for (int i=0; i<m; i++) {
+
+   nlambda=n*lambda[i];
+   A=update_alpha(A, K, P, W, ZB, wW, wWW, nlambda);
+   coef.slice(i)=A;
+
+  }
  }
 
  return coef;

@@ -37,6 +37,6 @@ plot(test[, 1], test[, 2], col = pred_to_num(rule) + 1)
 rule = predict(res, test[, 1:2]) #prediction for ITR with Reject and Rifine options using the one-step estimation
 plot(test[, 1], test[, 2], col = pred_to_num(rule) + 1)
 
-res=itrFit(train[, 1:2], train[, 3], train[, 4], s=1, method='dwd', kernel='polynomial', d=4, lambda=5^(3:10)) #common dwd loss fit
-rule = predict(res, test[, 1:2], s=1.2) #prediction for ITR with Reject and Rifine options using the two-step estimation
+res=itrFit(train[, 1:2], train[, 3], train[, 4], s = 1, method = "dwd", kernel = "polynomial", d = 4, lambda = 5^(3:10)) #common dwd loss fit
+rule = predict(res, test[, 1:2], s = 1.2) #prediction for ITR with Reject and Rifine options using the two-step estimation
 }
