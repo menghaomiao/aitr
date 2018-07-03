@@ -1,9 +1,11 @@
-predict.itrfit.dwd=function(obj, newdata=NULL, option='refine', s=obj$s, delta=NULL, fence=NULL) {
+predict.itrfit.del=function(obj, newdata=NULL, option='refine', s=obj$s, delta=NULL, fence=NULL) {
  if (obj$s==1 & option=='refine') {
+  d=dim(inner)
   inner=getInner(obj, newdata)
-  rule=matrix(0, nrow(inner), ncol(inner))
-  d=ddwd(inner)
-  rule[1/d<=s]=1
+  rule=matrix(0, d[1], d[2])
+  deri=ddel(inner, obj$method)
+  maxd=sapply(1:d[1], function(i) max(deri[i, ]))
+  rule[maxd/deri<=s]=1
   colnames(rule)=colnames(inner)
   rownames(rule)=rownames(inner)
   class(rule)=c('ITR', 'matrix')

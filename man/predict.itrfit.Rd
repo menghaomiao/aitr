@@ -14,7 +14,7 @@ predict(obj, newdata = NULL, option = "refine", delta = NULL, fence = NULL, s = 
 \item{option}{the option used for prediction. \code{option = "normal"} will produce ITR while \code{option = "refine"} will produce ITR with reject and refine option.}
 \item{delta}{a numeric value greater than -1 used for predicting ITRRNR, can be omitted if \code{option = "normal"} or \code{tunning = TRUE} when \code{itrFit} is called.}
 \item{fence}{a numeric value greater than 0 used for predicting ITRRNR, can be omitted if \code{option = "normal"} or \code{tunning = TRUE} when \code{itrFit} is called.}
-\item{s}{a numeric value greater than 1, ignored unless \code{obj} is of class \code{"itrfit.dwd"} and \code{obj$s = 1}.}
+\item{s}{a numeric value greater than 1, ignored unless \code{obj} is of class \code{"itrfit.del"} and \code{obj$s = 1}.}
 }
 \details{
 There are two prediction methods for \code{"itrfit"} object when \code{option = "refine"}. One is used for bent loss, where a one-step estimation is applied. Another is used for differentiable loss, which is a two-step estimation procedure. We recommand the first method in practice.

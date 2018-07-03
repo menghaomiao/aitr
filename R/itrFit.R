@@ -24,6 +24,7 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
  } else stop('kernel must be one of the followings: linear, gaussian, polynomial.')
  K=ker+diag(n)*0.01*mean(diag(ker))
  WWK=ind*(K+1)
+ method=match.arg(method, c('svm', 'dwd',  'exponential', 'logistic'), several = T)
  if (method=='svm') {
   diagK=diag(K)+1
   W_aW=matrix(-1/(k-1), n, k) #W_aW=<W_ai, W_j>
@@ -41,7 +42,7 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
    inner=get_inner(theta_s_gamma, ker, W_aW)
   }
   dim(inner)=c(n, k, m)
- } else if (method=='dwd') {
+ } else {
   Wbasis=W.gen(k)
   W=t(Wbasis[, a])
   inner=array(0, c(n, k, m))
@@ -49,18 +50,18 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
    folds=sample.int(n)%%5+1
    for (i in 1:5) {
     id=folds==i
-    A=dwdfit_C(WWK[!id, !id], K[!id, !id], W[!id, ], w[!id], sminus, lambda)
+    A=delfit_C(WWK[!id, !id], K[!id, !id], W[!id, ], w[!id], sminus, lambda, method)
     for (j in 1:m) {
      inner[id, , j]=cbind(1, ker[id, !id])%*%A[, , j]%*%Wbasis
     }
    }
   } else {
-   A=dwdfit_C(WWK, K, W, w, sminus, lambda)
+   A=delfit_C(WWK, K, W, w, sminus, lambda, method)
    for (j in 1:m) {
     inner[, , j]=cbind(1, ker)%*%A[,  ,j]%*%Wbasis
    }
   }
- } else stop('current version only supports svm and dwd loss.')
+ }
  obj=numeric(m)
  for (i in 1:m) {
   rule=sapply(1:n, function(j) which.max(inner[j, , i]))
@@ -70,7 +71,7 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
  if (opt==1 | opt==m) warning('The lambda may not be optimal. Another range may be considered.')
  optlambda=lambda[opt]
  optinner=inner[, , opt]
- res=list(obj_value=c(itr=obj[opt]), optlambda=optlambda, s=s, level=level.name, x=x, a=a, y=y, kernel=ker)
+ res=list(obj_value=c(itr=obj[opt]), optlambda=optlambda, s=s, level=level.name, x=x, a=a, y=y, method=method, kernel=ker)
  if (method=='svm') {
   if (cv) {
    theta_s_gamma=svmfit_C(WWK, diagK, w, sminus, optlambda)
@@ -83,14 +84,14 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
   class(res)=c('itrfit.svm', 'itrfit')
  } else {
   if (cv) {
-   A=dwdfit_C(WWK, K, W, w, sminus, lambda[1:opt])[, , opt]
+   A=delfit_C(WWK, K, W, w, sminus, lambda[1:opt], method)[, , opt]
    inner=cbind(1, ker)%*%A%*%Wbasis
   } else {
    A=A[, , opt]
    inner=optinner
   }
   res$coef=A
-  class(res)=c('itrfit.dwd', 'itrfit')
+  class(res)=c('itrfit.del', 'itrfit')
  }
  attr(res$kernel, 'type')=kernel
  if (kernel=='gaussian') attr(res$kernel, 'epsilon')=epsilon

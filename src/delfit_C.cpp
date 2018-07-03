@@ -3,27 +3,45 @@
 #include<RcppArmadillo.h>
 using namespace arma;
 
-vec firdwd(vec inner, int n) {
+vec fird(vec inner, int n, char loss) {
  vec d=ones(n);
  double u;
- for (int i=0; i<n; i++) {
-  u=inner[i];
-  if (u<-0.5) d[i]=1/(4*u*u);
+ switch(loss) {
+  case 'd':
+   for (int i=0; i<n; i++) {
+    u=inner[i];
+    if (u<-0.5) d[i]=1/(4*u*u);
+   }
+  break;
+  case 'e': d=exp(inner);
+  break;
+  case 'l': d=1-1/(1+exp(inner));
  }
  return d;
 }
 
-vec secdwd(vec inner, int n) {
+vec secd(vec inner, int n, char loss) {
  vec d=zeros(n);
  double u;
- for (int i=0; i<n; i++) {
-  u=inner[i];
-  if (u<-0.5) d[i]=-1/(2*u*u*u);
+ switch(loss) {
+  case 'd':
+   for (int i=0; i<n; i++) {
+    u=inner[i];
+    if (u<-0.5) d[i]=-1/(2*u*u*u);
+   }
+  break;
+  case 'e': d=exp(inner);
+  break;
+  case 'l':
+   for (int i=0; i<n; i++) {
+    u=exp(inner[i]);
+    d[i]=u/(1+u)/(1+u);
+   }
  }
  return d;
 }
 
-mat update_alpha(mat A, mat K, mat P, mat W, mat ZB, mat wW, mat wWW, double nlrho) {
+mat update_alpha(mat A, mat K, mat P, mat W, mat ZB, mat wW, mat wWW, double nlrho, char loss) {
 
  int n=K.n_rows, p=K.n_cols, kminus=W.n_cols;
  double partial, secpartial, temp, diff, epsilon=0.0000001*p*kminus;
@@ -39,9 +57,9 @@ mat update_alpha(mat A, mat K, mat P, mat W, mat ZB, mat wW, mat wWW, double nlr
 
    /* update alpha_0j */
    for (int i=0; i<10; i++) {
-    partial=sum(firdwd(u, n)%wW.col(j))+nlrho*A(0, j)+ZB(0, j);
+    partial=sum(fird(u, n, loss)%wW.col(j))+nlrho*A(0, j)+ZB(0, j);
     if (fabs(partial)<0.0000001) break;
-    secpartial=sum(secdwd(u, n)%wWW.col(j))+nlrho;
+    secpartial=sum(secd(u, n, loss)%wWW.col(j))+nlrho;
     if (fabs(secpartial)<0.001) secpartial=0.001;
     temp=partial/secpartial;
     A(0, j)-=temp;
@@ -56,9 +74,9 @@ mat update_alpha(mat A, mat K, mat P, mat W, mat ZB, mat wW, mat wWW, double nlr
 
     /* update alpha_qj */
     for (int i=0; i<10; i++) {
-     partial=sum(firdwd(u, n)%wW.col(j)%K.col(q))+sum(P.col(q)%(nlrho*A.col(j)+ZB.col(j)));
+     partial=sum(fird(u, n, loss)%wW.col(j)%K.col(q))+sum(P.col(q)%(nlrho*A.col(j)+ZB.col(j)));
      if (fabs(partial)<0.0000001) break;
-     secpartial=sum(secdwd(u, n)%wWW.col(j)%K.col(q)%K.col(q))+nlrho*P(q, q);
+     secpartial=sum(secd(u, n, loss)%wWW.col(j)%K.col(q)%K.col(q))+nlrho*P(q, q);
      if (fabs(secpartial)<0.001) secpartial=0.001;
      temp=partial/secpartial;
      A(q, j)-=temp;
@@ -115,7 +133,7 @@ double update_rho(double rho, double r1, double r2) {
 }
 
 // [[Rcpp::export]]
-cube dwdfit_C(mat WWK, mat K, mat W, vec w, double sminus, vec lambda, double maxiter=100) {
+cube delfit_C(mat WWK, mat K, mat W, vec w, double sminus, vec lambda, char loss, double maxiter=100) {
 
  int n=K.n_rows, p=n+1, kminus=W.n_cols, m=lambda.size();
  mat A(p, kminus), ZB(p, kminus), wW(n, kminus), wWW(n, kminus), P(p, p);
@@ -150,7 +168,7 @@ cube dwdfit_C(mat WWK, mat K, mat W, vec w, double sminus, vec lambda, double ma
     nlrho=nlambda+rho;
 
     /* update alpha */
-    A=update_alpha(A, K, P, W, ZB, wW, wWW, nlrho);
+    A=update_alpha(A, K, P, W, ZB, wW, wWW, nlrho, loss);
     u=sum(W%(K*A), 1);
     b=sum(W%(K*Z), 1);
     ub=(rho*u+b)/sminus;
@@ -195,7 +213,7 @@ cube dwdfit_C(mat WWK, mat K, mat W, vec w, double sminus, vec lambda, double ma
   for (int i=0; i<m; i++) {
 
    nlambda=n*lambda[i];
-   A=update_alpha(A, K, P, W, ZB, wW, wWW, nlambda);
+   A=update_alpha(A, K, P, W, ZB, wW, wWW, nlambda, loss);
    coef.slice(i)=A;
 
   }

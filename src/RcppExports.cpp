@@ -7,9 +7,9 @@
 using namespace Rcpp;
 using namespace arma;
 
-// dwdfit_C
-cube dwdfit_C(mat WWK, mat K, mat W, vec w, double sminus, vec lambda, double maxiter);
-RcppExport SEXP itrrnr_dwdfit_C(SEXP WWKSEXP, SEXP KSEXP, SEXP WSEXP, SEXP wSEXP, SEXP sminusSEXP, SEXP lambdaSEXP, SEXP maxiterSEXP) {
+// delfit_C
+cube delfit_C(mat WWK, mat K, mat W, vec w, double sminus, vec lambda, char loss, double maxiter);
+RcppExport SEXP itrrnr_delfit_C(SEXP WWKSEXP, SEXP KSEXP, SEXP WSEXP, SEXP wSEXP, SEXP sminusSEXP, SEXP lambdaSEXP, SEXP lossSEXP, SEXP maxiterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -19,8 +19,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< vec >::type w(wSEXP);
     Rcpp::traits::input_parameter< double >::type sminus(sminusSEXP);
     Rcpp::traits::input_parameter< vec >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< char >::type loss(lossSEXP);
     Rcpp::traits::input_parameter< double >::type maxiter(maxiterSEXP);
-    rcpp_result_gen = Rcpp::wrap(dwdfit_C(WWK, K, W, w, sminus, lambda, maxiter));
+    rcpp_result_gen = Rcpp::wrap(delfit_C(WWK, K, W, w, sminus, lambda, loss, maxiter));
     return rcpp_result_gen;
 END_RCPP
 }
