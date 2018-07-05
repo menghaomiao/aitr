@@ -1,5 +1,6 @@
 predict.itrfit.del=function(obj, newdata=NULL, option='refine', s=obj$s, delta=NULL, fence=NULL) {
  if (obj$s==1 & option=='refine') {
+  inner=getInner(obj, newdata)
   d=dim(inner)
   inner=getInner(obj, newdata)
   rule=matrix(0, d[1], d[2])

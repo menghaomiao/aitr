@@ -13,7 +13,7 @@ itrFit(x, a, y, p = 1/k, s = 1.2, method = "svm", kernel = "linear", epsilon = 1
 \item{y}{a numeric vector indicating the outcome after taking the treatment.}
 \item{p}{a numeric vector with each element between 0 to 1, indicating the probability of the treatment been assigned to the patient.}
 \item{s}{a numeric value greater than 1, indicating the bent slope of the loss.}
-\item{method}{the method to be used. Must be one of \code{"svm"}, \code{"dwd"}, \code{"exponential"} and \code{"logistic"}.}
+\item{method}{the method to be used. Must be one of \code{"svm"}, \code{"dwd"}, \code{"exp"} and \code{"log"}.}
 \item{kernel}{kernel type to be used. Currently only \code{linear}, \code{gaussian}, and \code{polynomial} are supported.}
 \item{epsilon}{a positive numeric value used only when \code{kernel = "gaussian"}.}
 \item{d}{a positive integer used only when \code{kernel = "polynomial"}.}
