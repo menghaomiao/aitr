@@ -1,5 +1,5 @@
 ddel=function(x, method) {
- switch(method, dwd=ddwd(x), exponential=exp(x), logistic=1-1/(1+exp(x)))
+ switch(method, dwd=ddwd(x), exponential=exp(x/5)/5, logistic=exp(x/2)/(1+exp(x/2))/2)
 }
 
 ddwd=function(x) {

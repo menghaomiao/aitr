@@ -13,9 +13,13 @@ vec fird(vec inner, int n, char loss) {
     if (u<-0.5) d[i]=1/(4*u*u);
    }
   break;
-  case 'e': d=exp(inner);
+  case 'e': d=exp(inner/5)/5;
   break;
-  case 'l': d=1-1/(1+exp(inner));
+  case 'l':
+   for (int i=0; i<n; i++) {
+    u=exp(inner[i]/2);
+    d[i]=u/(1+u)/2;
+   }
  }
  return d;
 }
@@ -30,12 +34,12 @@ vec secd(vec inner, int n, char loss) {
     if (u<-0.5) d[i]=-1/(2*u*u*u);
    }
   break;
-  case 'e': d=exp(inner);
+  case 'e': d=exp(inner/5)/25;
   break;
   case 'l':
    for (int i=0; i<n; i++) {
-    u=exp(inner[i]);
-    d[i]=u/(1+u)/(1+u);
+    u=exp(inner[i]/2);
+    d[i]=u/(1+u)/(1+u)/4;
    }
  }
  return d;

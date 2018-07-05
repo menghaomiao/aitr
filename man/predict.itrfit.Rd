@@ -17,7 +17,7 @@ predict(obj, newdata = NULL, option = "refine", delta = NULL, fence = NULL, s = 
 \item{s}{a numeric value greater than 1, ignored unless \code{obj} is of class \code{"itrfit.del"} and \code{obj$s = 1}.}
 }
 \details{
-There are two prediction methods for \code{"itrfit"} object when \code{option = "refine"}. One is used for bent loss, where a one-step estimation is applied. Another is used for differentiable loss, which is a two-step estimation procedure. We recommand the first method in practice.
+There are two prediction methods for \code{"itrfit"} object when \code{option = "refine"}. One is based on bent loss, where a one-step estimation is applied. Another is based on differentiable loss, which is a two-step estimation procedure. We recommand the first method in practice.
 }
 \value{
 \code{predict.itrfit} preduces a 0-1 matrix of class \code{"ITR"}, where the column names are the treatment levels and ith row indicates which treatments are suggested to ith patient. Specifically, 1 stands for "suggested" and 0 stands for "not suggested".
@@ -29,7 +29,7 @@ There are two prediction methods for \code{"itrfit"} object when \code{option = 
 data(sim1)
 train = sim1[1:1000, ]
 test = sim1[3001:5000, ]
-res = itrFit(train[, 1:2], train[, 3], train[, 4], kernel = "polynomial", d = 4, lambda = 5^(4:11)) #bent loss fit
+res = itrFit(train[, 1:2], train[, 3], train[, 4], kernel = "polynomial", d = 4, lambda = 5^(4:11)) #bent hinge loss fit
 
 rule = predict(res, test[, 1:2], option = "normal") #prediction for ITR
 plot(test[, 1], test[, 2], col = pred_to_num(rule) + 1)
@@ -37,6 +37,7 @@ plot(test[, 1], test[, 2], col = pred_to_num(rule) + 1)
 rule = predict(res, test[, 1:2]) #prediction for ITR with Reject and Rifine options using the one-step estimation
 plot(test[, 1], test[, 2], col = pred_to_num(rule) + 1)
 
-res=itrFit(train[, 1:2], train[, 3], train[, 4], s = 1, method = "dwd", kernel = "polynomial", d = 4, lambda = 5^(3:10)) #common dwd loss fit
+res=itrFit(train[, 1:2], train[, 3], train[, 4], s = 1, method = "log", kernel = "polynomial", d = 2, lambda = 5^(0:8)) #common logistic loss fit
 rule = predict(res, test[, 1:2], s = 1.2) #prediction for ITR with Reject and Rifine options using the two-step estimation
+plot(test[, 1], test[, 2], col = pred_to_num(rule) + 1)
 }
