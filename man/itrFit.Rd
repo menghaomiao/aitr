@@ -5,14 +5,14 @@
 Fit the ITR with Reject and Refine Options (ITRRNR) under bent svm or dwd loss.
 }
 \usage{
-itrFit(x, a, y, p = 1/k, s = 1.2, method = "svm", kernel = "linear", epsilon = 1/2/median(d)^2, d = 2, lambda = 5^(-5:5), cv = FALSE, tunning = TRUE)
+itrFit(x, a, y, p = 1/k, c = 1.2, method = "svm", kernel = "linear", epsilon = 1/2/median(d)^2, d = 2, lambda = 5^(-5:5), cv = FALSE, tunning = TRUE)
 }
 \arguments{
 \item{x}{a data frame or a matrix.}
 \item{a}{a factor or an integer vector indicating the treatment assigned to patients.}
 \item{y}{a numeric vector indicating the outcome after taking the treatment.}
 \item{p}{a numeric vector with each element between 0 to 1, indicating the probability of the treatment been assigned to the patient.}
-\item{s}{a numeric value greater than 1, indicating the bent slope of the loss.}
+\item{c}{a numeric value no less than 1, indicating the bent slope of the loss.}
 \item{method}{the method to be used. Must be one of \code{"svm"}, \code{"dwd"}, \code{"exp"} and \code{"log"}.}
 \item{kernel}{kernel type to be used. Currently only \code{linear}, \code{gaussian}, and \code{polynomial} are supported.}
 \item{epsilon}{a positive numeric value used only when \code{kernel = "gaussian"}.}
@@ -22,14 +22,14 @@ itrFit(x, a, y, p = 1/k, s = 1.2, method = "svm", kernel = "linear", epsilon = 1
 \item{tunning}{logical.If \code{TRUE} then a tunning procedure for \code{delta} and \code{fence} (used for predicting ITRRNR) is performed.}
 }
 \details{
-This function could fit the Individualized Treatment Rule under bent svm or bent dwd loss. The bent slope is controled by parameter s. When \code{s = 1}, it will degenerate to the usual ITR fit. For the purpose of saving computation time, it suggested to set \code{cv = TRUE} for bent svm loss and \code{cv = FALSE} for bent dwd loss. It also suggested to set \code{tunning = TRUE} unless the reject and refine options are not needed.
+This function could fit the Individualized Treatment Rule under bent svm or bent dwd loss. The bent slope is controled by parameter c. When \code{c = 1}, it will degenerate to the usual ITR fit. For the purpose of saving computation time, it suggested to set \code{cv = TRUE} for bent svm loss and \code{cv = FALSE} for bent dwd loss. It also suggested to set \code{tunning = TRUE} unless the reject and refine options are not needed.
 }
 \value{
 \code{itrFit} returns an object of class \code{c("itrfit.svm", "itrfit")} or \code{c("itrfit.del", "itrfit")}. An object of class \code{"itrfit"} is a list containing at least the following components:
 
 \item{obj_value}{the expected outcome under the original ITR. if \code{tunning=TRUE}, the weighted expected outcome under ITRRNR objective function is also returned.}
 \item{optlambda}{the optimal lambda.}
-\item{s}{the bent slope.}
+\item{c}{the bent slope.}
 \item{level}{the treatment levels.}
 \item{x}{the input covariate \code{x} used for fitting.}
 \item{a}{the input treatment \code{a} used for fitting.}

@@ -7,7 +7,7 @@ getInner.itrfit.svm=function(obj, newdata=NULL) {
  id=rownames(obj$x)
  W_aW=matrix(-1/(k-1), n, k)
  W_aW[cbind(1:n, a)]=1
- theta_s_gamma=as.matrix(obj$theta_s_gamma)
+ theta_gamma=as.matrix(obj$theta_gamma)
  K=obj$kernel
  if (!is.null(newdata)) {
   x=obj$x
@@ -25,7 +25,7 @@ getInner.itrfit.svm=function(obj, newdata=NULL) {
    K=(1+newx%*%t(x))^d
   }
  }
- inner=get_inner(theta_s_gamma, K, W_aW)
+ inner=get_inner(theta_gamma, K, W_aW)
  colnames(inner)=level
  rownames(inner)=id
  return(inner)

@@ -1,7 +1,7 @@
 useDynLib(itrrnr)
 importFrom(Rcpp, sourceCpp)
 exportPattern("^[[:alpha:]]+")
-import(pdist)
+importFrom(pdist, pdist)
 export(itrFit)
 export(getInner)
 export(predict.itrfit)

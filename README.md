@@ -5,7 +5,7 @@ This R package is designed for computing Individualized Treatment Rule (ITR) wit
 In R, use
 
 ```r
-library(devtools);install('itrrnr')
+devtools::install('itrrnr')
 ```
 
 to install.

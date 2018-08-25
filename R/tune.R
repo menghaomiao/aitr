@@ -1,8 +1,8 @@
-tune=function(inner, a, y, p, s) {
+tune=function(inner, a, y, p, c) {
  evalfit=function(rule) {
   rulesize=rowSums(rule)
   inrule=rowSums(rule*rulea)==1
-  sum((y/p/(1+(rulesize-1)*s))[inrule])/sum(inrule/p/rulesize)
+  sum((y/p/(1+(rulesize-1)*c))[inrule])/sum(inrule/p/rulesize)
  }
  n=nrow(inner)
  k=ncol(inner)

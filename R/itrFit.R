@@ -1,4 +1,4 @@
-itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/2/median(d)^2, d=2, lambda=5^(-5:5), cv=F, tunning=T) {
+itrFit=function(x, a, y, p=1/k, c=1.2, method='svm', kernel='linear', epsilon=1/2/median(d)^2, d=2, lambda=5^(-5:5), cv=F, tunning=T) {
  n=length(a)
  a=as.factor(a)
  level.name=levels(a)
@@ -10,9 +10,9 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
  ind[which(ind!=0)]=-1/(k-1)
  ind[which(ind==0)]=1
  if (any(p<0 | p>1)) stop('p must be between 0 to 1!')
- if (length(s)>1 | s<1) stop('s must be a number greater than 1!')
+ if (length(c)>1 | c<1) stop('c must be a number no less than 1!')
  w=y/p
- sminus=s-1
+ cminus=c-1
  x=as.matrix(x)
  if (kernel=='linear') {
   ker=x%*%t(x)
@@ -34,12 +34,12 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
    folds=sample.int(n)%%5+1
    for (i in 1:5) {
     id=folds==i
-    theta_s_gamma=svmfit_C(WWK[!id, !id], diagK[!id], w[!id], sminus, lambda)
-    inner[id, ]=get_inner(theta_s_gamma, ker[id, !id], W_aW[!id, ])
+    theta_gamma=svmfit_C(WWK[!id, !id], diagK[!id], w[!id], cminus, lambda)
+    inner[id, ]=get_inner(theta_gamma, ker[id, !id], W_aW[!id, ])
    }
   } else {
-   theta_s_gamma=svmfit_C(WWK, diagK, w, sminus, lambda)
-   inner=get_inner(theta_s_gamma, ker, W_aW)
+   theta_gamma=svmfit_C(WWK, diagK, w, cminus, lambda)
+   inner=get_inner(theta_gamma, ker, W_aW)
   }
   dim(inner)=c(n, k, m)
  } else {
@@ -50,13 +50,13 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
    folds=sample.int(n)%%5+1
    for (i in 1:5) {
     id=folds==i
-    A=delfit_C(WWK[!id, !id], K[!id, !id], W[!id, ], w[!id], sminus, lambda, method)
+    A=delfit_C(WWK[!id, !id], K[!id, !id], W[!id, ], w[!id], cminus, lambda, method)
     for (j in 1:m) {
      inner[id, , j]=cbind(1, ker[id, !id])%*%A[, , j]%*%Wbasis
     }
    }
   } else {
-   A=delfit_C(WWK, K, W, w, sminus, lambda, method)
+   A=delfit_C(WWK, K, W, w, cminus, lambda, method)
    for (j in 1:m) {
     inner[, , j]=cbind(1, ker)%*%A[,  ,j]%*%Wbasis
    }
@@ -71,20 +71,20 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
  if (opt==1 | opt==m) warning('The lambda may not be optimal. Another range may be considered.')
  optlambda=lambda[opt]
  optinner=inner[, , opt]
- res=list(obj_value=c(itr=obj[opt]), optlambda=optlambda, s=s, level=level.name, x=x, a=a, y=y, method=method, kernel=ker)
+ res=list(obj_value=c(itr=obj[opt]), optlambda=optlambda, c=c, level=level.name, x=x, a=a, y=y, method=method, kernel=ker)
  if (method=='svm') {
   if (cv) {
-   theta_s_gamma=svmfit_C(WWK, diagK, w, sminus, optlambda)
-   inner=get_inner(theta_s_gamma, ker, W_aW)
+   theta_gamma=svmfit_C(WWK, diagK, w, cminus, optlambda)
+   inner=get_inner(theta_gamma, ker, W_aW)
   } else {
-   theta_s_gamma=theta_s_gamma[, opt]
+   theta_gamma=theta_gamma[, opt]
    inner=optinner
   }
-  res$theta_s_gamma=as.numeric(theta_s_gamma)
+  res$theta_gamma=as.numeric(theta_gamma)
   class(res)=c('itrfit.svm', 'itrfit')
  } else {
   if (cv) {
-   A=delfit_C(WWK, K, W, w, sminus, lambda[1:opt], method)[, , opt]
+   A=delfit_C(WWK, K, W, w, cminus, lambda[1:opt], method)[, , opt]
    inner=cbind(1, ker)%*%A%*%Wbasis
   } else {
    A=A[, , opt]
@@ -96,15 +96,15 @@ itrFit=function(x, a, y, p=1/k, s=1.2, method='svm', kernel='linear', epsilon=1/
  attr(res$kernel, 'type')=kernel
  if (kernel=='gaussian') attr(res$kernel, 'epsilon')=epsilon
  if (kernel=='polynomial') attr(res$kernel, 'degree')=d
- if (s>1 & tunning) {
-  tunning=tune(optinner, a, y, p, s)
+ if (c>1 & tunning) {
+  tunning=tune(optinner, a, y, p, c)
   obj=tunning$obj_value
   res$obj_value=c(res$obj_value, itrrnr=obj)
-  if (cv) tunning=tune(inner, a, y, p, s)
+  if (cv) tunning=tune(inner, a, y, p, c)
   res$predict=tunning$rule
   colnames(res$predict)=level.name
   rownames(res$predict)=rownames(x)
-  attr(res$predict, 'outcome.ratio')=s
+  attr(res$predict, 'outcome.ratio')=c
   class(res$predict)=c('ITR', 'matrix')
   res$refine_par=tunning$refine_par
  } else {

@@ -137,7 +137,7 @@ double update_rho(double rho, double r1, double r2) {
 }
 
 // [[Rcpp::export]]
-cube delfit_C(mat WWK, mat K, mat W, vec w, double sminus, vec lambda, char loss, double maxiter=100) {
+cube delfit_C(mat WWK, mat K, mat W, vec w, double cminus, vec lambda, char loss, double maxiter=100) {
 
  int n=K.n_rows, p=n+1, kminus=W.n_cols, m=lambda.size();
  mat A(p, kminus), ZB(p, kminus), wW(n, kminus), wWW(n, kminus), P(p, p);
@@ -154,7 +154,7 @@ cube delfit_C(mat WWK, mat K, mat W, vec w, double sminus, vec lambda, char loss
  P.submat(1, 1, p-1, p-1)=K;
  K=join_rows(u, K);
 
- if (sminus>0) { /* dwd fit for bent loss */
+ if (cminus>0) { /* dwd fit for bent loss */
 
   mat B(p, kminus), Z(p, kminus), oldB(p, kminus), temp(p, kminus);
   vec b(n), ub(n), gamma(n);
@@ -175,7 +175,7 @@ cube delfit_C(mat WWK, mat K, mat W, vec w, double sminus, vec lambda, char loss
     A=update_alpha(A, K, P, W, ZB, wW, wWW, nlrho, loss);
     u=sum(W%(K*A), 1);
     b=sum(W%(K*Z), 1);
-    ub=(rho*u+b)/sminus;
+    ub=(rho*u+b)/cminus;
 
     /* update beta */
     gamma=update_gamma(gamma, K, WWK, ub, w);
@@ -184,7 +184,7 @@ cube delfit_C(mat WWK, mat K, mat W, vec w, double sminus, vec lambda, char loss
      temp.submat(1, j, n, j)=gamma%W.col(j);
     }
     temp.row(0)=sum(temp);
-    B=A-(sminus*temp-Z)/rho;
+    B=A-(cminus*temp-Z)/rho;
 
     /* check convergence */
     r1=0, r2=0;

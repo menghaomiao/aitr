@@ -8,8 +8,8 @@ using namespace Rcpp;
 using namespace arma;
 
 // delfit_C
-cube delfit_C(mat WWK, mat K, mat W, vec w, double sminus, vec lambda, char loss, double maxiter);
-RcppExport SEXP itrrnr_delfit_C(SEXP WWKSEXP, SEXP KSEXP, SEXP WSEXP, SEXP wSEXP, SEXP sminusSEXP, SEXP lambdaSEXP, SEXP lossSEXP, SEXP maxiterSEXP) {
+cube delfit_C(mat WWK, mat K, mat W, vec w, double cminus, vec lambda, char loss, double maxiter);
+RcppExport SEXP _itrrnr_delfit_C(SEXP WWKSEXP, SEXP KSEXP, SEXP WSEXP, SEXP wSEXP, SEXP cminusSEXP, SEXP lambdaSEXP, SEXP lossSEXP, SEXP maxiterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -17,26 +17,37 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< mat >::type K(KSEXP);
     Rcpp::traits::input_parameter< mat >::type W(WSEXP);
     Rcpp::traits::input_parameter< vec >::type w(wSEXP);
-    Rcpp::traits::input_parameter< double >::type sminus(sminusSEXP);
+    Rcpp::traits::input_parameter< double >::type cminus(cminusSEXP);
     Rcpp::traits::input_parameter< vec >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< char >::type loss(lossSEXP);
     Rcpp::traits::input_parameter< double >::type maxiter(maxiterSEXP);
-    rcpp_result_gen = Rcpp::wrap(delfit_C(WWK, K, W, w, sminus, lambda, loss, maxiter));
+    rcpp_result_gen = Rcpp::wrap(delfit_C(WWK, K, W, w, cminus, lambda, loss, maxiter));
     return rcpp_result_gen;
 END_RCPP
 }
 // svmfit_C
-NumericMatrix svmfit_C(NumericMatrix WWK, NumericVector diagK, NumericVector w, double sminus, NumericVector lambda);
-RcppExport SEXP itrrnr_svmfit_C(SEXP WWKSEXP, SEXP diagKSEXP, SEXP wSEXP, SEXP sminusSEXP, SEXP lambdaSEXP) {
+NumericMatrix svmfit_C(NumericMatrix WWK, NumericVector diagK, NumericVector w, double cminus, NumericVector lambda);
+RcppExport SEXP _itrrnr_svmfit_C(SEXP WWKSEXP, SEXP diagKSEXP, SEXP wSEXP, SEXP cminusSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericMatrix >::type WWK(WWKSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type diagK(diagKSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type w(wSEXP);
-    Rcpp::traits::input_parameter< double >::type sminus(sminusSEXP);
+    Rcpp::traits::input_parameter< double >::type cminus(cminusSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type lambda(lambdaSEXP);
-    rcpp_result_gen = Rcpp::wrap(svmfit_C(WWK, diagK, w, sminus, lambda));
+    rcpp_result_gen = Rcpp::wrap(svmfit_C(WWK, diagK, w, cminus, lambda));
     return rcpp_result_gen;
 END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_itrrnr_delfit_C", (DL_FUNC) &_itrrnr_delfit_C, 8},
+    {"_itrrnr_svmfit_C", (DL_FUNC) &_itrrnr_svmfit_C, 5},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_itrrnr(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }

@@ -1,9 +1,9 @@
-get_inner=function(alpha_s_gamma, K, W_aW) {
+get_inner=function(theta_gamma, K, W_aW) {
 ## inner=<W_j, f(x_i)>, k*1 vector for each observation
 ## n*k matrix for each lambda, column bind for all lambdas
  K=K+1
- alpha_s_gamma=as.matrix(alpha_s_gamma)
- m=ncol(alpha_s_gamma)
- inner=lapply(1:m, function(j) -K%*%(alpha_s_gamma[, j]*W_aW))
+ theta_gamma=as.matrix(theta_gamma)
+ m=ncol(theta_gamma)
+ inner=lapply(1:m, function(j) -K%*%(theta_gamma[, j]*W_aW))
  do.call('cbind', inner)
 }
