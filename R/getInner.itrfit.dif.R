@@ -1,4 +1,4 @@
-getInner.itrfit.del=function(obj, newdata=NULL) {
+getInner.itrfit.dif=function(obj, newdata=NULL) {
  level=obj$level
  k=length(level)
  var=colnames(obj$x)

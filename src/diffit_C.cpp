@@ -60,16 +60,27 @@ mat update_alpha(mat A, mat K, mat P, mat W, mat ZB, mat wW, mat wWW, double nlr
   for (int j=0; j<kminus; j++) {
 
    /* update alpha_0j */
-   for (int i=0; i<10; i++) {
-    partial=sum(fird(u, n, loss)%wW.col(j))+nlrho*A(0, j)+ZB(0, j);
-    if (fabs(partial)<0.0000001) break;
-    secpartial=sum(secd(u, n, loss)%wWW.col(j))+nlrho;
-    if (fabs(secpartial)<0.001) secpartial=0.001;
+   if (loss == 's') {
+
+    partial=sum((1+u/2)%wW.col(j))+nlrho*A(0, j)+ZB(0, j);
+    secpartial=sum(wWW.col(j))/2+nlrho;
     temp=partial/secpartial;
     A(0, j)-=temp;
     u=u-temp*W.col(j);
-   } /* newton raphson for alpha_0j */
 
+   } else {
+
+    for (int i=0; i<10; i++) {
+     partial=sum(fird(u, n, loss)%wW.col(j))+nlrho*A(0, j)+ZB(0, j);
+     if (fabs(partial)<0.0000001) break;
+     secpartial=sum(secd(u, n, loss)%wWW.col(j))+nlrho;
+     if (fabs(secpartial)<0.001) secpartial=0.001;
+     temp=partial/secpartial;
+     A(0, j)-=temp;
+     u=u-temp*W.col(j);
+    } /* newton raphson for alpha_0j */
+
+   }
   }
 
   /* update alpha */
@@ -77,21 +88,32 @@ mat update_alpha(mat A, mat K, mat P, mat W, mat ZB, mat wW, mat wWW, double nlr
    for (int q=1; q<p; q++) {
 
     /* update alpha_qj */
-    for (int i=0; i<10; i++) {
-     partial=sum(fird(u, n, loss)%wW.col(j)%K.col(q))+sum(P.col(q)%(nlrho*A.col(j)+ZB.col(j)));
-     if (fabs(partial)<0.0000001) break;
-     secpartial=sum(secd(u, n, loss)%wWW.col(j)%K.col(q)%K.col(q))+nlrho*P(q, q);
-     if (fabs(secpartial)<0.001) secpartial=0.001;
+    if (loss == 's') {
+
+     partial=sum((1+u/2)%wW.col(j)%K.col(q))+sum(P.col(q)%(nlrho*A.col(j)+ZB.col(j)));
+     secpartial=sum(wWW.col(j)%K.col(q)%K.col(q))/2+nlrho*P(q, q);
      temp=partial/secpartial;
      A(q, j)-=temp;
      u=u-temp*K.col(q)%W.col(j);
-    } /* newton raphson for alpha_qj */
 
+    } else {
+
+     for (int i=0; i<10; i++) {
+      partial=sum(fird(u, n, loss)%wW.col(j)%K.col(q))+sum(P.col(q)%(nlrho*A.col(j)+ZB.col(j)));
+      if (fabs(partial)<0.0000001) break;
+      secpartial=sum(secd(u, n, loss)%wWW.col(j)%K.col(q)%K.col(q))+nlrho*P(q, q);
+      if (fabs(secpartial)<0.001) secpartial=0.001;
+      temp=partial/secpartial;
+      A(q, j)-=temp;
+      u=u-temp*K.col(q)%W.col(j);
+     } /* newton raphson for alpha_qj */
+
+    }
    }
   }
 
- diff=sum(sum(pow(A-oldA, 2)));
- if (diff<epsilon) break;
+  diff=sum(sum(pow(A-oldA, 2)));
+  if (diff<epsilon) break;
  }
 
  return A;
@@ -137,7 +159,7 @@ double update_rho(double rho, double r1, double r2) {
 }
 
 // [[Rcpp::export]]
-cube delfit_C(mat WWK, mat K, mat W, vec w, double cminus, vec lambda, char loss, double maxiter=100) {
+cube diffit_C(mat WWK, mat K, mat W, vec w, double cminus, vec lambda, char loss, double maxiter=100) {
 
  int n=K.n_rows, p=n+1, kminus=W.n_cols, m=lambda.size();
  mat A(p, kminus), ZB(p, kminus), wW(n, kminus), wWW(n, kminus), P(p, p);

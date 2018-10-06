@@ -7,9 +7,9 @@
 using namespace Rcpp;
 using namespace arma;
 
-// delfit_C
-cube delfit_C(mat WWK, mat K, mat W, vec w, double cminus, vec lambda, char loss, double maxiter);
-RcppExport SEXP _itrrnr_delfit_C(SEXP WWKSEXP, SEXP KSEXP, SEXP WSEXP, SEXP wSEXP, SEXP cminusSEXP, SEXP lambdaSEXP, SEXP lossSEXP, SEXP maxiterSEXP) {
+// diffit_C
+cube diffit_C(mat WWK, mat K, mat W, vec w, double cminus, vec lambda, char loss, double maxiter);
+RcppExport SEXP _itrrnr_diffit_C(SEXP WWKSEXP, SEXP KSEXP, SEXP WSEXP, SEXP wSEXP, SEXP cminusSEXP, SEXP lambdaSEXP, SEXP lossSEXP, SEXP maxiterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -21,7 +21,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< vec >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< char >::type loss(lossSEXP);
     Rcpp::traits::input_parameter< double >::type maxiter(maxiterSEXP);
-    rcpp_result_gen = Rcpp::wrap(delfit_C(WWK, K, W, w, cminus, lambda, loss, maxiter));
+    rcpp_result_gen = Rcpp::wrap(diffit_C(WWK, K, W, w, cminus, lambda, loss, maxiter));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -42,7 +42,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_itrrnr_delfit_C", (DL_FUNC) &_itrrnr_delfit_C, 8},
+    {"_itrrnr_diffit_C", (DL_FUNC) &_itrrnr_diffit_C, 8},
     {"_itrrnr_svmfit_C", (DL_FUNC) &_itrrnr_svmfit_C, 5},
     {NULL, NULL, 0}
 };

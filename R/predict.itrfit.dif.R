@@ -1,10 +1,10 @@
-predict.itrfit.del=function(obj, newdata=NULL, option='refine', c=obj$c, delta=NULL, fence=NULL) {
+predict.itrfit.dif=function(obj, newdata=NULL, option='refine', c=obj$c, delta=NULL, fence=NULL) {
  if (obj$c==1 & option=='refine') {
   inner=getInner(obj, newdata)
   d=dim(inner)
   inner=getInner(obj, newdata)
   rule=matrix(0, d[1], d[2])
-  deri=ddel(inner, obj$method)
+  deri=ddif(inner, obj$method)
   maxd=sapply(1:d[1], function(i) max(deri[i, ]))
   rule[maxd/deri<=c]=1
   colnames(rule)=colnames(inner)

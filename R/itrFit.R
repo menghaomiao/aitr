@@ -24,7 +24,7 @@ itrFit=function(x, a, y, p=1/k, c=1.2, method='svm', kernel='linear', epsilon=1/
  } else stop('kernel must be one of the followings: linear, gaussian, polynomial.')
  K=ker+diag(n)*0.01*mean(diag(ker))
  WWK=ind*(K+1)
- method=match.arg(method, c('svm', 'dwd',  'exponential', 'logistic'), several = T)
+ method=match.arg(method, c('svm', 'dwd',  'exponential', 'logistic', 'square'), several = T)
  if (method=='svm') {
   diagK=diag(K)+1
   W_aW=matrix(-1/(k-1), n, k) #W_aW=<W_ai, W_j>
@@ -50,13 +50,13 @@ itrFit=function(x, a, y, p=1/k, c=1.2, method='svm', kernel='linear', epsilon=1/
    folds=sample.int(n)%%5+1
    for (i in 1:5) {
     id=folds==i
-    A=delfit_C(WWK[!id, !id], K[!id, !id], W[!id, ], w[!id], cminus, lambda, method)
+    A=diffit_C(WWK[!id, !id], K[!id, !id], W[!id, ], w[!id], cminus, lambda, method)
     for (j in 1:m) {
      inner[id, , j]=cbind(1, ker[id, !id])%*%A[, , j]%*%Wbasis
     }
    }
   } else {
-   A=delfit_C(WWK, K, W, w, cminus, lambda, method)
+   A=diffit_C(WWK, K, W, w, cminus, lambda, method)
    for (j in 1:m) {
     inner[, , j]=cbind(1, ker)%*%A[,  ,j]%*%Wbasis
    }
@@ -84,14 +84,14 @@ itrFit=function(x, a, y, p=1/k, c=1.2, method='svm', kernel='linear', epsilon=1/
   class(res)=c('itrfit.svm', 'itrfit')
  } else {
   if (cv) {
-   A=delfit_C(WWK, K, W, w, cminus, lambda[1:opt], method)[, , opt]
+   A=diffit_C(WWK, K, W, w, cminus, lambda[1:opt], method)[, , opt]
    inner=cbind(1, ker)%*%A%*%Wbasis
   } else {
    A=A[, , opt]
    inner=optinner
   }
   res$coef=A
-  class(res)=c('itrfit.del', 'itrfit')
+  class(res)=c('itrfit.dif', 'itrfit')
  }
  attr(res$kernel, 'type')=kernel
  if (kernel=='gaussian') attr(res$kernel, 'epsilon')=epsilon
