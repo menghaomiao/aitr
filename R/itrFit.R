@@ -44,7 +44,7 @@ itrFit=function(x, a, y, p=1/k, c=1.2, method='svm', kernel='linear', epsilon=1/
   dim(inner)=c(n, k, m)
  } else {
   Wbasis=W.gen(k)
-  W=t(Wbasis[, a])
+  W=t(Wbasis[, a, drop=F])
   inner=array(0, c(n, k, m))
   if (cv) {
    folds=sample.int(n)%%5+1
