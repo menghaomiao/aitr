@@ -50,7 +50,7 @@ itrFit=function(x, a, y, p=1/k, c=1.2, method='svm', kernel='linear', epsilon=1/
    folds=sample.int(n)%%5+1
    for (i in 1:5) {
     id=folds==i
-    A=diffit_C(WWK[!id, !id], K[!id, !id], W[!id, ], w[!id], cminus, lambda, method)
+    A=diffit_C(WWK[!id, !id], K[!id, !id], W[!id, , drop=F], w[!id], cminus, lambda, method)
     for (j in 1:m) {
      inner[id, , j]=cbind(1, ker[id, !id])%*%A[, , j]%*%Wbasis
     }
