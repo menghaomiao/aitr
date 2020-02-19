@@ -60,7 +60,7 @@ mat update_alpha(mat A, mat K, mat P, mat W, mat ZB, mat wW, mat wWW, double nlr
   for (int j=0; j<kminus; j++) {
 
    /* update alpha_0j */
-   if (loss == 's') {
+   if (loss=='s') {
 
     partial=sum((1+u/2)%wW.col(j))+nlrho*A(0, j)+ZB(0, j);
     secpartial=sum(wWW.col(j))/2+nlrho;
@@ -88,7 +88,7 @@ mat update_alpha(mat A, mat K, mat P, mat W, mat ZB, mat wW, mat wWW, double nlr
    for (int q=1; q<p; q++) {
 
     /* update alpha_qj */
-    if (loss == 's') {
+    if (loss=='s') {
 
      partial=sum((1+u/2)%wW.col(j)%K.col(q))+sum(P.col(q)%(nlrho*A.col(j)+ZB.col(j)));
      secpartial=sum(wWW.col(j)%K.col(q)%K.col(q))/2+nlrho*P(q, q);
@@ -176,7 +176,7 @@ cube diffit_C(mat WWK, mat K, mat W, vec w, double cminus, vec lambda, char loss
  P.submat(1, 1, p-1, p-1)=K;
  K=join_rows(u, K);
 
- if (cminus>0) { /* dwd fit for bent loss */
+ if (cminus>0) { /* fit for bent loss */
 
   mat B(p, kminus), Z(p, kminus), oldB(p, kminus), temp(p, kminus);
   vec b(n), ub(n), gamma(n);
@@ -233,7 +233,7 @@ cube diffit_C(mat WWK, mat K, mat W, vec w, double cminus, vec lambda, char loss
    coef.slice(i)=A;
   }
 
- } else { /* dwd fit for common loss */
+ } else { /* fit for common loss */
 
   /* iterate for lambda */
   for (int i=0; i<m; i++) {

@@ -9,7 +9,7 @@ using namespace arma;
 
 // diffit_C
 cube diffit_C(mat WWK, mat K, mat W, vec w, double cminus, vec lambda, char loss, double maxiter);
-RcppExport SEXP _itrrnr_diffit_C(SEXP WWKSEXP, SEXP KSEXP, SEXP WSEXP, SEXP wSEXP, SEXP cminusSEXP, SEXP lambdaSEXP, SEXP lossSEXP, SEXP maxiterSEXP) {
+RcppExport SEXP _aitr_diffit_C(SEXP WWKSEXP, SEXP KSEXP, SEXP WSEXP, SEXP wSEXP, SEXP cminusSEXP, SEXP lambdaSEXP, SEXP lossSEXP, SEXP maxiterSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -27,7 +27,7 @@ END_RCPP
 }
 // svmfit_C
 NumericMatrix svmfit_C(NumericMatrix WWK, NumericVector diagK, NumericVector w, double cminus, NumericVector lambda);
-RcppExport SEXP _itrrnr_svmfit_C(SEXP WWKSEXP, SEXP diagKSEXP, SEXP wSEXP, SEXP cminusSEXP, SEXP lambdaSEXP) {
+RcppExport SEXP _aitr_svmfit_C(SEXP WWKSEXP, SEXP diagKSEXP, SEXP wSEXP, SEXP cminusSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -42,12 +42,12 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_itrrnr_diffit_C", (DL_FUNC) &_itrrnr_diffit_C, 8},
-    {"_itrrnr_svmfit_C", (DL_FUNC) &_itrrnr_svmfit_C, 5},
+    {"_aitr_diffit_C", (DL_FUNC) &_aitr_diffit_C, 8},
+    {"_aitr_svmfit_C", (DL_FUNC) &_aitr_svmfit_C, 5},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_itrrnr(DllInfo *dll) {
+RcppExport void R_init_aitr(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

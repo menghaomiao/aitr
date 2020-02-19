@@ -1,11 +1,11 @@
-Package: itrrnr
+Package: aitr
 Type: Package
-Title: Individual Treatment Rule with Reject and Refine Options
+Title: Alternative Individual Treatment Recommendation
 Version: 1.0
-Date: 2017-10-27
+Date: 2020-02-18
 Author: Haomiao Meng
 Maintainer: Haomiao Meng <haomiaomeng@126.com>
-Description: This package computes the Individualized Treatment Rule (ITR) with reject and refine options under svm and dwd loss.
+Description: This package is for alternative individualized treatment recommendation (A-ITR). It generalizes ITR by recommending multiple treatments that are alternative to each other. 
 License: GPL-2
 Imports: Rcpp (>= 0.12.7), pdist
 LinkingTo: Rcpp, RcppArmadillo

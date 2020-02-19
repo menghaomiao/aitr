@@ -1,4 +1,4 @@
-useDynLib(itrrnr)
+useDynLib(aitr)
 importFrom(Rcpp, sourceCpp)
 exportPattern("^[[:alpha:]]+")
 importFrom(pdist, pdist)

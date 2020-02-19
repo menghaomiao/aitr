@@ -1,8 +1,8 @@
 \name{evalITR}
 \alias{evalITR}
-\title{Evaluate Fitting for Individualized Treatment Rule (ITR)}
+\title{Evaluate a Fitted ITR or A-ITR}
 \description{
-Evaluate the goodness of fit for predicted ITR with or without reject and refine options.
+Evaluate the goodness of fit for predicted ITR or A-ITR.
 }
 \usage{
 ## S3 method for class "ITR"
@@ -18,7 +18,7 @@ evalITR(rule, a, y, p = 1/d[2])
 \code{evalFit} returns a numeric value indicating the expected outcome under the fitted rule.
 }
 \author{
-\packageAuthor{itrrnr}
+\packageAuthor{aitr}
 }
 \examples{
 data(sim1)
@@ -30,5 +30,5 @@ rule = predict(res, test[, 1:2], option = "normal")
 evalITR(rule, test[, 3], test[, 4]) #evaluate prediction for ITR
 
 rule = predict(res, test[, 1:2])
-evalITR(rule, test[, 3], test[, 4]) #evaluate prediction for ITR with Reject and Rifine options
+evalITR(rule, test[, 3], test[, 4]) #evaluate prediction for A-ITR
 }

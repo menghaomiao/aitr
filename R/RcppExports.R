@@ -2,10 +2,10 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 diffit_C <- function(WWK, K, W, w, cminus, lambda, loss, maxiter = 100) {
-    .Call('_itrrnr_diffit_C', PACKAGE = 'itrrnr', WWK, K, W, w, cminus, lambda, loss, maxiter)
+    .Call('_aitr_diffit_C', PACKAGE = 'aitr', WWK, K, W, w, cminus, lambda, loss, maxiter)
 }
 
 svmfit_C <- function(WWK, diagK, w, cminus, lambda) {
-    .Call('_itrrnr_svmfit_C', PACKAGE = 'itrrnr', WWK, diagK, w, cminus, lambda)
+    .Call('_aitr_svmfit_C', PACKAGE = 'aitr', WWK, diagK, w, cminus, lambda)
 }
 

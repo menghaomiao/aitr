@@ -1,8 +1,8 @@
 \name{itrFit}
 \alias{itrFit}
-\title{Individualized Treatment Rule (ITR) Fitting}
+\title{Fitting Individualized Treatment Recommendation (ITR)}
 \description{
-Fit the ITR with Reject and Refine Options (ITRRNR) under bent svm or dwd loss.
+Fit alternative individualized treatment recommendation (A-ITR) or ITR given a loss function and a kernel.
 }
 \usage{
 itrFit(x, a, y, p = 1/k, c = 1.2, method = "svm", kernel = "linear", epsilon = 1/2/median(d)^2, d = 2, lambda = 5^(-5:5), cv = FALSE, tunning = TRUE)
@@ -18,16 +18,16 @@ itrFit(x, a, y, p = 1/k, c = 1.2, method = "svm", kernel = "linear", epsilon = 1
 \item{epsilon}{a positive numeric value used only when \code{kernel = "gaussian"}.}
 \item{d}{a positive integer used only when \code{kernel = "polynomial"}.}
 \item{lambda}{a numeric vector indicating the penalty for tunning.}
-\item{cv}{logical.If \code{TRUE} then a 5-fold cross validation is performed.}
-\item{tunning}{logical.If \code{TRUE} then a tunning procedure for \code{delta} and \code{fence} (used for predicting ITRRNR) is performed.}
+\item{cv}{logical. If \code{TRUE} then a 5-fold cross validation is performed.}
+\item{tunning}{logical. If \code{TRUE} then a tunning procedure for \code{delta} and \code{fence} (used for predicting A-ITR) is performed.}
 }
 \details{
-This function could fit the Individualized Treatment Rule under bent svm or bent dwd loss. The bent slope is controled by parameter c. When \code{c = 1}, it will degenerate to the usual ITR fit. For the purpose of saving computation time, it suggested to set \code{cv = TRUE} for bent svm loss and \code{cv = FALSE} for bent dwd loss. It also suggested to set \code{tunning = TRUE} unless the reject and refine options are not needed.
+This function fits an individualized treatment recommendation under a bent loss. The bent slope is controled by the parameter c. When \code{c = 1}, it degenerates to the traditional ITR fit. For the purpose of saving computation time, it is suggested to set \code{cv = TRUE} for bent svm loss and \code{cv = FALSE} for other bent losses. It is also suggested to set \code{tunning = TRUE} for fitting A-ITR.
 }
 \value{
 \code{itrFit} returns an object of class \code{c("itrfit.svm", "itrfit")} or \code{c("itrfit.dif", "itrfit")}. An object of class \code{"itrfit"} is a list containing at least the following components:
 
-\item{obj_value}{the expected outcome under the original ITR. if \code{tunning=TRUE}, the weighted expected outcome under ITRRNR objective function is also returned.}
+\item{obj_value}{the expected outcome under the traditional ITR. If \code{tunning = TRUE}, the weighted expected outcome (for evaluating an A-ITR) is also returned.}
 \item{optlambda}{the optimal lambda.}
 \item{c}{the bent slope.}
 \item{level}{the treatment levels.}
@@ -36,13 +36,13 @@ This function could fit the Individualized Treatment Rule under bent svm or bent
 \item{y}{the input outcome \code{y} used for fitting.}
 \item{method}{the method used.}
 \item{kernel}{the kernel matrix computed.}
-\item{predict}{an object of class \code{"ITR"}. If \code{tunning=TRUE}, then the fitted rule with reject and refine options is returned, otherwise the original ITR will be returned.}
-\item{refine_par}{if \code{tunning=TRUE}, a tunning parameter used in predicting ITRRNR.}
+\item{predict}{an object of class \code{"ITR"}. If \code{tunning = TRUE}, return A-ITR, otherwise return ITR.}
+\item{refine_par}{if \code{tunning = TRUE}, the tunning parameter used for predicting the A-ITR.}
 
-In addition, for \code{"itrfit.svm"} object it will return fitted value \code{theta_s_gamma}, and for \code{"itrfit.dif"} it will return the fitted coefficient \code{coef}.
+In addition, the fitted coefficients are returned depending on the object class. Specifically, \code{theta_s_gamma} for \code{"itrfit.svm"} object, and \code{coef} for \code{"itrfit.dif"} object.
 }
 \author{
-\packageAuthor{itrrnr}
+\packageAuthor{aitr}
 }
 \examples{
 data(sim1)

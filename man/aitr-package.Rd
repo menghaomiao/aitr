@@ -1,24 +1,24 @@
-\name{itrrnr-package}
-\alias{itrrnr-package}
-\alias{itrrnr}
+\name{aitr-package}
+\alias{aitr-package}
+\alias{aitr}
 \docType{package}
 \title{
-\packageTitle{itrrnr}
+\packageTitle{aitr}
 }
 \description{
-\packageDescription{itrrnr}
+\packageDescription{aitr}
 }
 \details{
 
 The DESCRIPTION file:
-\packageDESCRIPTION{itrrnr}
-\packageIndices{itrrnr}
+\packageDESCRIPTION{aitr}
+\packageIndices{aitr}
 
 }
 \author{
-\packageAuthor{itrrnr}
+\packageAuthor{aitr}
 
-Maintainer: \packageMaintainer{itrrnr}
+Maintainer: \packageMaintainer{aitr}
 }
 \references{
 ~~ Literature or other references for background information ~~
