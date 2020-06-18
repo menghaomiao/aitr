@@ -75,7 +75,7 @@ evalR=function(rule, truerule, testy, FUN=min) {
 }
 regfit=function(x, a, y, testx) {
  k=max(a)
- sapply(1:k, function(i) predict(listdtr::krr(x[a==i, ], y), testx))
+ sapply(1:k, function(i) randomForest::randomForest(x, y, testx, subset=a==i)$test$predicted)
 }
 linfit=function(x, a, y, testx) {
  k=max(a)
